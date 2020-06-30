@@ -2,37 +2,37 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.MuiTypography-colorTextSecondary,
+.MuiTypography-colorPrimary {
+  font-size: 10px !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .MuiListItemSecondaryAction-root {
+    position: relative !important;
+    bottom: 0;
+    right: 0 !important;
+    top: 0 !important;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  .makeStyles-price-25 {
+    font-size: 1.2em !important;
   }
-  to {
-    transform: rotate(360deg);
+  .MuiListItem-secondaryAction {
+    padding-right: 0 !important;
+  }
+  .MuiTypography-colorTextSecondary,
+  .MuiTypography-colorPrimary,
+  .MuiChip-labelSmall {
+    font-size: 8px !important;
+  }
+  .MuiExpansionPanelSummary-content {
+    margin: 0 !important;
   }
 }
