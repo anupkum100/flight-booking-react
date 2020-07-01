@@ -1,5 +1,11 @@
-import { checkIfDifferenceInTimeGreateThan30Mins } from "./Utility";
+/*!
+ * All the component level logic are handled in this model
+ */
 
+import { checkIfDifferenceInTimeGreateThan30Mins } from "./Utility";
+const URL = "https://tw-frontenders.firebaseio.com/advFlightSearch.json";
+
+// baisc flight interface
 export interface Flight {
     arrivalTime: string
     date: string
@@ -11,6 +17,7 @@ export interface Flight {
     price: number
 }
 
+// it will return an array of Flight if all condition are satisfied
 export function getNoStopsFlights(allFlights: Array<Flight>, origin: string, destination: string, departureDate: Date, priceFilter: Array<number>) {
     return allFlights.filter((flightDetails: Flight) => {
         return (flightDetails.origin === origin &&
@@ -21,6 +28,7 @@ export function getNoStopsFlights(allFlights: Array<Flight>, origin: string, des
     })
 }
 
+// it will return an array of connecting Flight (flight1 and fligh2) if all condition are satisfied
 export function getMultipleStopsFlights(allFlights: Array<Flight>, origin: string, destination: string, departureDate: Date, priceFilter: Array<number>) {
     let filteredOriginResult: any = [];
     let filteredDestinationResult: any = [];
@@ -54,3 +62,13 @@ export function getMultipleStopsFlights(allFlights: Array<Flight>, origin: strin
 
     return multipleRouteData
 }
+
+// API call to get all flight result
+export const getAllFlights = async () => {
+    const response = await fetch(URL);
+    if (response.ok) {
+      return response;
+    } else {
+      throw new Error(response.statusText);
+    }
+  };

@@ -18,8 +18,8 @@ import { withStyles } from '@material-ui/core/styles';
 import FlightFilterCard from './FlightFilterCard';
 import MultipleFlightCard from './MultipleFlightCard';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Flight, getNoStopsFlights, getMultipleStopsFlights } from '../servic/MainModel';
-import { getCities } from '../servic/Utility';
+import { Flight, getNoStopsFlights, getMultipleStopsFlights, getAllFlights } from '../service/MainModel';
+import { getCities } from '../service/Utility';
 import Alert from '@material-ui/lab/Alert';
 
 const drawerWidth = window.innerWidth < 500 ? window.innerWidth : 300;
@@ -45,7 +45,9 @@ interface State {
     priceFilter: Array<number> // check for price range
 
     isSearchFilterOn: boolean // check if the result is according to the user search
-    isReturn: boolean // check if user selected the return flight 
+    isReturn: boolean // check if user selected the return flight tab
+
+    showReturnFlight: boolean // decides when to swow the return flight section
 }
 
 class Main extends React.Component<Props, State> {
@@ -68,20 +70,19 @@ class Main extends React.Component<Props, State> {
             returnFlights: [],
             returnMultipleRoute: [],
             priceFilter: [0, 10000],
+            showReturnFlight: false
         }
     }
 
     componentDidMount() {
-        fetch("https://tw-frontenders.firebaseio.com/advFlightSearch.json")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.allFlights = result;
-                    this.setState({
-                        allFlights: result,
-                    });
-                }
-            )
+        getAllFlights().then(res => res.json()).then(
+            (result) => {
+                this.allFlights = result;
+                this.setState({
+                    allFlights: result,
+                });
+            }
+        )
     }
 
     createFlightCard = (isReturn?: boolean) => {
@@ -115,6 +116,7 @@ class Main extends React.Component<Props, State> {
             allFlights: filteredResult,
             multipleRoute: multipleRouteData,
             isSearchFilterOn: true,
+            showReturnFlight: false
         })
 
         if (this.state.isReturn) {
@@ -123,7 +125,8 @@ class Main extends React.Component<Props, State> {
 
             this.setState({
                 returnFlights: filteredResult_Return,
-                returnMultipleRoute: multipleRouteData_Return
+                returnMultipleRoute: multipleRouteData_Return,
+                showReturnFlight: true
             })
         }
     }
@@ -137,41 +140,10 @@ class Main extends React.Component<Props, State> {
         </div>
     }
 
-    resetFilter = () => {
-        this.setState({
-            originCity: '',
-            destinationCity: '',
-            departureDate: new Date(),
-            returnDate: new Date(),
-            selectedSeats: 1,
-            allFlights: this.allFlights,
-            multipleRoute: [],
-            isSearchFilterOn: false,
-            isReturn: false,
-            priceFilter: [0, 10000],
-        })
-    }
-
-    handleTabChange = () => {
-        this.setState({
-            isReturn: !this.state.isReturn
-            // }, this.filterFlights)
-        })
-    }
-
     showErrorMessage() {
         if (this.state.originCity !== '' && this.state.originCity === this.state.destinationCity)
             return <Alert severity="error">Origin and Destination can not be same</Alert>
         return null
-    }
-
-    validateForm = () => {
-        if (this.state.originCity === '' ||
-            this.state.destinationCity === '' ||
-            this.state.originCity === this.state.destinationCity) {
-            return true
-        }
-        return false
     }
 
     render() {
@@ -244,6 +216,7 @@ class Main extends React.Component<Props, State> {
 
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
+                                size="small"
                                 minDate={new Date()}
                                 fullWidth
                                 autoOk
@@ -258,6 +231,7 @@ class Main extends React.Component<Props, State> {
 
                             {this.state.isReturn ?
                                 <KeyboardDatePicker
+                                    size="small"
                                     minDate={this.state.departureDate}
                                     variant="inline"
                                     fullWidth
@@ -323,13 +297,13 @@ class Main extends React.Component<Props, State> {
                      Flights</p>}
 
                     <Grid container>
-                        <Grid item xs={this.state.isReturn &&
+                        <Grid item xs={this.state.showReturnFlight &&
                             this.state.isSearchFilterOn ? 6 : 12}>
                             {this.createFlightCard()}
                             {this.createMultipleFlightCard()}
                         </Grid>
 
-                        {this.state.isReturn && this.state.isSearchFilterOn ? <Grid item xs={6}>
+                        {this.state.showReturnFlight && this.state.isSearchFilterOn ? <Grid item xs={6}>
                             {this.createFlightCard(this.state.isReturn)}
                             {this.createMultipleFlightCard(this.state.isReturn)}
                         </Grid> : null}
@@ -376,6 +350,38 @@ class Main extends React.Component<Props, State> {
         this.setState({
             priceFilter: newValue
         }, this.filterFlights)
+    }
+
+    handleTabChange = () => {
+        this.setState({
+            isReturn: !this.state.isReturn,
+            showReturnFlight: this.state.isReturn ? true : false
+        })
+    }
+
+    // Form state handling and validation
+    resetFilter = () => {
+        this.setState({
+            originCity: '',
+            destinationCity: '',
+            departureDate: new Date(),
+            returnDate: new Date(),
+            selectedSeats: 1,
+            allFlights: this.allFlights,
+            multipleRoute: [],
+            isSearchFilterOn: false,
+            isReturn: false,
+            priceFilter: [0, 10000],
+        })
+    }
+
+    validateForm = () => {
+        if (this.state.originCity === '' ||
+            this.state.destinationCity === '' ||
+            this.state.originCity === this.state.destinationCity) {
+            return true
+        }
+        return false
     }
 }
 

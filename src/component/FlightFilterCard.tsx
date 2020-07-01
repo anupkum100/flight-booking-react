@@ -1,5 +1,12 @@
+/*!
+ * This component is used Filtered flight card at the top
+ * Same component is used for the return flights
+ * Component used from Material UI
+ */
+
 import React from 'react'
 import { ListItem, ListItemAvatar, Avatar, Grid, ListItemText, makeStyles, createStyles, Hidden } from '@material-ui/core';
+import { changeDateFormat } from '../service/Utility';
 
 const flightIcon = require('../asset/icons/filght.png');
 const returnFlightIcon = require('../asset/icons/return_flight.png');
@@ -21,7 +28,7 @@ export default function FlightFilterCard(props: any) {
     }
     return <div className={classes.root}>
         {createListElement(props)}
-        {props.isReturn ? createListElement(props, true) : null}
+        {props.showReturnFlight ? createListElement(props, true) : null}
     </div>
 }
 
@@ -57,9 +64,4 @@ function createListElement(props: any, isReturn?: boolean) {
 
         </Grid>
     </ListItem>
-}
-
-function changeDateFormat(date: string) {
-    let changedDate = new Date(date).toDateString().split(' ');
-    return (changedDate[0] + ', ' + changedDate[2] + ' ' + changedDate[1])
 }

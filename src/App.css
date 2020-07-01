@@ -15,15 +15,23 @@
 .MuiAlert-message {
   font-size: 10px !important;
 }
-.MuiAlert-root{
+.MuiAlert-root {
   padding: 3px 10px !important;
   margin-bottom: 10px;
 }
-.MuiAlert-message{
+.MuiAlert-message {
   padding: 12px 0 !important;
 }
 
-@media only screen and (max-width: 600px) {
+.MuiExpansionPanelSummary-content {
+  margin: 0 !important;
+}
+
+.MuiOutlinedInput-adornedEnd {
+  padding-right: 0 !important;
+}
+
+@media only screen and (max-width: 500px) {
   .MuiListItemSecondaryAction-root {
     position: relative !important;
     bottom: 0;
@@ -44,8 +52,8 @@
   .MuiExpansionPanelSummary-content {
     margin: 0 !important;
   }
-  .MuiTypography-body1{
-    font-size: .6rem !important; 
+  .MuiTypography-body1 {
+    font-size: 0.6rem !important;
     font-weight: bold !important;
   }
 }

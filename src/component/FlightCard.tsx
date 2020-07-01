@@ -1,3 +1,10 @@
+/*!
+ * This is a generic component used to create a simple card for 1 flight
+ * Same card is used for the return flight
+ * Same card is used for showing indivisual flight for multiple flight scenario
+ * Component used from Material UI
+ */
+
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -7,7 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Button, Grid, Hidden } from '@material-ui/core';
-import { calculateTimeDifference } from '../servic/Utility';
+import { calculateTimeDifference } from '../service/Utility';
 
 const flightIcon = require('../asset/icons/filght.png');
 
@@ -36,7 +43,7 @@ export default function FlightCard(props: any) {
     return (
         <List className={classes.root}>
             <ListItem key={props.flightNo} className={classes.listItem}>
-                <Hidden smDown>
+                <Hidden xsDown>
                     <ListItemAvatar>
                         <Avatar
                             alt={`Avatar n°${props.flightNo + 1}`}
@@ -46,7 +53,7 @@ export default function FlightCard(props: any) {
                 </Hidden>
 
                 <Grid container>
-                    <Hidden smDown>
+                    <Hidden xsDown>
                         <Grid item xs={4} md={2}>
                             <ListItemText primary={props.name} />
                             <ListItemText secondary={props.flightNo} />
@@ -61,7 +68,7 @@ export default function FlightCard(props: any) {
                         <ListItemText primary={props.arrivalTime} />
                         <ListItemText secondary={props.destination.split(' ')[0]} />
                     </Grid>
-                    <Hidden smDown>
+                    <Hidden xsDown>
                         <Grid item xs={4} md={2}>
                             <ListItemText primary={calculateTimeDifference(props)} />
                             <ListItemText secondary={'Non Stop'} />

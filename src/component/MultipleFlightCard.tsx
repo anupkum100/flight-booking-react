@@ -1,3 +1,8 @@
+/*!
+ * This component is used to create a simple card for Connecting flights
+ * Component used from Material UI
+ */
+
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -9,7 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button, Grid, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Link, Hidden } from '@material-ui/core';
 import FlightCard from './FlightCard';
 import LayoverTime from './LayoverTime';
-import { calculateTotalDurationForMultipleFlight } from '../servic/Utility';
+import { calculateTotalDurationForMultipleFlight } from '../service/Utility';
 
 const multipleFlightIcon = require('../asset/icons/connecting.png');
 
@@ -69,7 +74,7 @@ export default function MultipleFlightCard(props: any) {
                         <Grid container>
                             <Grid item xs={6} md={2}>
                                 <ListItemText primary={'Multiple'} />
-                                <Link href="#" id="show-hide-link">
+                                <Link id="show-hide-link">
                                     {expanded ? 'Hide Details' : 'Details'}
                                 </Link>
                             </Grid>
