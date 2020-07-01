@@ -9,6 +9,9 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button, Grid, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Link, Hidden } from '@material-ui/core';
 import FlightCard from './FlightCard';
 import LayoverTime from './LayoverTime';
+import { calculateTotalDurationForMultipleFlight } from '../servic/Utility';
+
+const multipleFlightIcon = require('../asset/icons/connecting.png');
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: 0
         },
         root: {
-            width: '99%'
+            width: '100%'
         },
         listItem: {
             marginBottom: "5px",
@@ -53,35 +56,35 @@ export default function MultipleFlightCard(props: any) {
     return (
         <ExpansionPanel className={classes.expantionRoot} expanded={expanded === props.flight1.flightNo + props.flight2.flightNo} onChange={handleChange(props.flight1.flightNo + props.flight2.flightNo)}>
             <ExpansionPanelSummary className={classes.expantionContent} >
-                <List dense className={classes.root}>
+                <List className={classes.root}>
                     <ListItem key={props.flightNo} className={classes.listItem}>
-                        <Hidden mdDown>
+                        <Hidden smDown>
                             <ListItemAvatar>
                                 <Avatar
                                     alt={`Avatar n°${props.flightNo + 1}`}
-                                    src={`https://cdn0.iconfinder.com/data/icons/airport-glyph-black/2048/7641_-_Multiple_Flights-512.png`}
+                                    src={multipleFlightIcon}
                                 />
                             </ListItemAvatar>
                         </Hidden>
-                        <Grid container spacing={3}>
+                        <Grid container>
                             <Grid item xs={6} md={2}>
                                 <ListItemText primary={'Multiple'} />
                                 <Link href="#" id="show-hide-link">
-                                    {expanded ? 'Hide Details' : 'Show Details'}
+                                    {expanded ? 'Hide Details' : 'Details'}
                                 </Link>
                             </Grid>
-                            <Hidden mdDown>
+                            <Hidden smDown>
                                 <Grid item xs={4} md={2}>
                                     <ListItemText primary={props.flight1.departureTime} />
-                                    <ListItemText secondary={props.flight1.origin} />
+                                    <ListItemText secondary={props.flight1.origin.split(' ')[0]} />
                                 </Grid>
                                 <Grid item xs={4} md={2}>
                                     <ListItemText primary={props.flight2.arrivalTime} />
-                                    <ListItemText secondary={props.flight2.destination} />
+                                    <ListItemText secondary={props.flight2.destination.split(' ')[0]} />
                                 </Grid>
 
                                 <Grid item xs={4} md={2}>
-                                    <ListItemText classes={{ primary: classes.duration }} primary={calculateTotalDuration(props)} />
+                                    <ListItemText classes={{ primary: classes.duration }} primary={calculateTotalDurationForMultipleFlight(props)} />
                                     <ListItemText secondary={'Total Duration'} />
                                 </Grid>
                             </Hidden>
@@ -106,26 +109,4 @@ export default function MultipleFlightCard(props: any) {
         </ExpansionPanel>
 
     );
-}
-
-function calculateTotalDuration(props: any) {
-    let flight1Time = calculateTime(props.flight1);
-    let flight2Time = calculateTime(props.flight2);
-
-    let totalTime = flight1Time + flight2Time;
-    return (Math.floor(totalTime / 60) + 'h ' + totalTime % 60 + 'm')
-}
-
-function calculateTime(props: any) {
-    let arrivingHour = parseInt(props.arrivalTime.split(':')[0]);
-    let arrivingMinute = parseInt(props.arrivalTime.split(':')[1]);
-    let arrivingTime = arrivingHour * 60 + arrivingMinute;
-
-    let departureHour = parseInt(props.departureTime.split(':')[0]);
-    let departureMinute = parseInt(props.departureTime.split(':')[1]);
-    let departureTime = departureHour * 60 + departureMinute;
-
-    let difference = arrivingTime - departureTime;
-
-    return difference;
 }

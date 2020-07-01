@@ -11,46 +11,41 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FlightCard from './FlightCard';
-import { TextField, InputLabel, FormControl, Select, MenuItem, Button, Link, Tabs, Tab, Grid, Slider } from '@material-ui/core';
+import { TextField, InputLabel, FormControl, Select, MenuItem, Button, Link, Tabs, Tab, Grid, Slider, Box } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { withStyles } from '@material-ui/core/styles';
 import FlightFilterCard from './FlightFilterCard';
 import MultipleFlightCard from './MultipleFlightCard';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Flight, getNoStopsFlights, getMultipleStopsFlights } from '../servic/MainModel';
+import { getCities } from '../servic/Utility';
+import Alert from '@material-ui/lab/Alert';
 
-
-const drawerWidth = 300;
-
-interface Flight {
-    arrivalTime: string
-    date: string
-    departureTime: string
-    destination: string
-    flightNo: string
-    name: string
-    origin: string
-    price: number
-}
+const drawerWidth = window.innerWidth < 500 ? window.innerWidth : 300;
 
 interface Props {
-    classes: any
+    classes: any // for adding the theme to the component
 }
 
 interface State {
-    open: boolean
-    originCity: string
-    destinationCity: string
-    departureDate: Date
-    returnDate: Date
-    selectedSeats: number
-    allFlights: Array<Flight>
-    multipleRoute: any
-    isSearchFilterOn: boolean
-    isReturn: boolean
-    returnFlights: Array<Flight>
-    returnMultipleRoute: any
-    priceSlider: Array<number>
+    open: boolean // to check the status of drawer open or close 
+    originCity: string // Origin city selected by user in the filter form
+    destinationCity: string // Destination city selected by user in the filter form
+    departureDate: Date // Origin Departure Date selected by user in the filter form
+    returnDate: Date // Return Date selected by user in the filter form if isReturn flag is true
+    selectedSeats: number // Number of seats selected by the user in filter form 
+
+    allFlights: Array<Flight> // list of all flights going from origin to destination 1 stop
+    multipleRoute: any // list of flights that combinely run from origin to destination 1+ stop
+
+    returnFlights: Array<Flight> // list of return flight 1 stop
+    returnMultipleRoute: any    //list of flights that combinely run from destination to origin 1+ stop
+
+    priceFilter: Array<number> // check for price range
+
+    isSearchFilterOn: boolean // check if the result is according to the user search
+    isReturn: boolean // check if user selected the return flight 
 }
 
 class Main extends React.Component<Props, State> {
@@ -63,8 +58,8 @@ class Main extends React.Component<Props, State> {
             open: true,
             originCity: '',
             destinationCity: '',
-            departureDate: new Date(),
-            returnDate: new Date(),
+            departureDate: new Date('2020/11/01'),
+            returnDate: new Date('2020/11/02'),
             selectedSeats: 1,
             allFlights: [],
             multipleRoute: [],
@@ -72,7 +67,7 @@ class Main extends React.Component<Props, State> {
             isReturn: false,
             returnFlights: [],
             returnMultipleRoute: [],
-            priceSlider: [0, 10000]
+            priceFilter: [0, 10000],
         }
     }
 
@@ -111,75 +106,26 @@ class Main extends React.Component<Props, State> {
         })
     }
 
-    getNoStopsFlights(origin: string, destination: string, departureDate: Date) {
-        return this.allFlights.filter((flightDetails: Flight) => {
-            return (flightDetails.origin === origin &&
-                flightDetails.destination === destination &&
-                new Date(flightDetails.date).toDateString() === departureDate.toDateString())
-        })
-    }
-
-    getMultipleStopsFlights(origin: string, destination: string, departureDate: Date) {
-        let filteredOriginResult: any = [];
-        let filteredDestinationResult: any = [];
-
-        this.allFlights.forEach((flightDetails: Flight) => {
-            if (flightDetails.origin === origin) {
-                filteredOriginResult.push(flightDetails)
-            }
-            if (flightDetails.destination === destination) {
-                filteredDestinationResult.push(flightDetails)
-            }
-        })
-
-        let multipleRouteData: any = [];
-
-        filteredOriginResult.forEach((originFilter: Flight) => {
-            filteredDestinationResult.forEach((destinationFilter: Flight) => {
-                if (originFilter.destination === destinationFilter.origin &&
-                    destinationFilter.date === originFilter.date &&
-                    new Date(originFilter.date).toDateString() === departureDate.toDateString() &&
-                    checkIfDifferenceInTimeGreateThan30Mins(destinationFilter.departureTime, originFilter.arrivalTime)) {
-                    multipleRouteData.push({
-                        flight1: originFilter,
-                        flight2: destinationFilter
-                    })
-                }
-            });
-        });
-
-        return multipleRouteData
-    }
-
     filterFlights = () => {
         // NO Stop flights for one way
-        let filteredResult: any = this.getNoStopsFlights(this.state.originCity, this.state.destinationCity, this.state.departureDate);
-        let multipleRouteData: any = this.getMultipleStopsFlights(this.state.originCity, this.state.destinationCity, this.state.departureDate);
+        let filteredResult: any = getNoStopsFlights(this.allFlights, this.state.originCity, this.state.destinationCity, this.state.departureDate, this.state.priceFilter);
+        let multipleRouteData: any = getMultipleStopsFlights(this.allFlights, this.state.originCity, this.state.destinationCity, this.state.departureDate, this.state.priceFilter);
 
         this.setState({
             allFlights: filteredResult,
             multipleRoute: multipleRouteData,
             isSearchFilterOn: true,
-            // open: false
         })
 
         if (this.state.isReturn) {
-            let filteredResult_Return: any = this.getNoStopsFlights(this.state.destinationCity, this.state.originCity, this.state.returnDate);
-            let multipleRouteData_Return: any = this.getMultipleStopsFlights(this.state.destinationCity, this.state.originCity, this.state.returnDate);
+            let filteredResult_Return: any = getNoStopsFlights(this.allFlights, this.state.destinationCity, this.state.originCity, this.state.returnDate, this.state.priceFilter);
+            let multipleRouteData_Return: any = getMultipleStopsFlights(this.allFlights, this.state.destinationCity, this.state.originCity, this.state.returnDate, this.state.priceFilter);
 
             this.setState({
                 returnFlights: filteredResult_Return,
                 returnMultipleRoute: multipleRouteData_Return
             })
         }
-    }
-
-    getCities = () => {
-        let allCitires: Array<String> = this.allFlights.map((flightDetails: Flight) => {
-            return flightDetails.origin
-        })
-
-        return allCitires.filter((city, index, ar) => { return ar.indexOf(city) === index; });
     }
 
     createFilterCard = () => {
@@ -201,7 +147,8 @@ class Main extends React.Component<Props, State> {
             allFlights: this.allFlights,
             multipleRoute: [],
             isSearchFilterOn: false,
-            isReturn: false
+            isReturn: false,
+            priceFilter: [0, 10000],
         })
     }
 
@@ -210,6 +157,12 @@ class Main extends React.Component<Props, State> {
             isReturn: !this.state.isReturn
             // }, this.filterFlights)
         })
+    }
+
+    showErrorMessage() {
+        if (this.state.originCity !== '' && this.state.originCity === this.state.destinationCity)
+            return <Alert severity="error">Origin and Destination can not be same</Alert>
+        return null
     }
 
     validateForm = () => {
@@ -270,8 +223,8 @@ class Main extends React.Component<Props, State> {
                         <Autocomplete
                             disableClearable
                             id="originCity"
-                            options={this.getCities()}
-                            value={this.state.originCity}
+                            options={getCities(this.allFlights)}
+                            // value={this.state.originCity}
                             getOptionLabel={(option: any) => option}
                             size="small"
                             onChange={this.onTagsChange}
@@ -281,8 +234,8 @@ class Main extends React.Component<Props, State> {
 
                         <Autocomplete
                             id="destinationCity"
-                            options={this.getCities()}
-                            value={this.state.destinationCity}
+                            options={getCities(this.allFlights)}
+                            // value={this.state.destinationCity}
                             getOptionLabel={(option: any) => option}
                             size="small"
                             onChange={this.onTagsChange}
@@ -333,21 +286,31 @@ class Main extends React.Component<Props, State> {
                             </Select>
                         </FormControl>
 
-                        <Typography id="range-slider" gutterBottom>
-                            Price Range
-                        </Typography>
-                        <Slider
-                            max={10000}
-                            min={1000}
-                            value={this.state.priceSlider}
-                            onChange={this.handlePriceSliderChange}
-                            valueLabelDisplay="auto"
-                            aria-labelledby="range-slider"
-                            // getAriaValueText={value}
-                        />
-                        <Button disabled={this.validateForm()} variant="contained" color="secondary" size="small" onClick={this.filterFlights}>
+                        <Box m={2} />
+
+                        {this.showErrorMessage()}
+
+                        <Button disabled={this.validateForm()} variant="contained" color="secondary" size="small" onClick={() => { this.filterFlights(); this.handleDrawerToggle() }}>
                             Search
                         </Button>
+
+
+                        <Box m={2} />
+
+                        <FormControl margin="dense" fullWidth required className={classes.formControlSlider}>
+                            <Slider
+                                max={10000}
+                                min={1000}
+                                value={this.state.priceFilter}
+                                onChange={this.handlePriceFilterChange}
+                                aria-labelledby="range-slider"
+                                valueLabelDisplay="on"
+                                style={{ fontSize: "8px" }}
+                            />
+                            <Typography variant="subtitle2" id="range-slider" gutterBottom>
+                                Refine Flight Search
+                        </Typography>
+                        </FormControl>
                     </form>
                 </Drawer>
                 <main
@@ -356,14 +319,17 @@ class Main extends React.Component<Props, State> {
                     })}
                 >
                     <div className={classes.drawerHeader} />
-                    {this.state.isSearchFilterOn ? this.createFilterCard() : null}
+                    {this.state.isSearchFilterOn ? this.createFilterCard() : <p className="text-left">All
+                     Flights</p>}
+
                     <Grid container>
-                        <Grid item xs={this.state.isReturn && this.state.isSearchFilterOn ? 6 : 12}>
+                        <Grid item xs={this.state.isReturn &&
+                            this.state.isSearchFilterOn ? 6 : 12}>
                             {this.createFlightCard()}
                             {this.createMultipleFlightCard()}
                         </Grid>
 
-                        {this.state.isReturn ? <Grid item xs={6}>
+                        {this.state.isReturn && this.state.isSearchFilterOn ? <Grid item xs={6}>
                             {this.createFlightCard(this.state.isReturn)}
                             {this.createMultipleFlightCard(this.state.isReturn)}
                         </Grid> : null}
@@ -402,22 +368,15 @@ class Main extends React.Component<Props, State> {
 
     handleReturnDateChange = (e: any) => {
         this.setState({
-            returnDate: e
+            returnDate: e,
         })
     }
 
-    handlePriceSliderChange = (event: any, newValue: any) => {
+    handlePriceFilterChange = (event: any, newValue: any) => {
         this.setState({
-            priceSlider: newValue
-        })
+            priceFilter: newValue
+        }, this.filterFlights)
     }
-}
-
-function checkIfDifferenceInTimeGreateThan30Mins(startTime: string, endTime: string) {
-    let startTimeInMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
-    let endTimeInMinutes = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
-
-    return ((startTimeInMinutes - endTimeInMinutes) > 30)
 }
 
 const useStyles = (theme: Theme) =>
@@ -487,6 +446,9 @@ const useStyles = (theme: Theme) =>
         },
         autocomplete: {
             marginBottom: "15px"
+        },
+        formControlSlider: {
+            padding: "1rem"
         }
     })
 

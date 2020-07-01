@@ -10,8 +10,17 @@
 }
 
 .MuiTypography-colorTextSecondary,
-.MuiTypography-colorPrimary {
+.MuiTypography-colorPrimary,
+.MuiSlider-valueLabel,
+.MuiAlert-message {
   font-size: 10px !important;
+}
+.MuiAlert-root{
+  padding: 3px 10px !important;
+  margin-bottom: 10px;
+}
+.MuiAlert-message{
+  padding: 12px 0 !important;
 }
 
 @media only screen and (max-width: 600px) {
@@ -21,8 +30,8 @@
     right: 0 !important;
     top: 0 !important;
   }
-  .makeStyles-price-25 {
-    font-size: 1.2em !important;
+  [class^="makeStyles-price"] {
+    font-size: 1em !important;
   }
   .MuiListItem-secondaryAction {
     padding-right: 0 !important;
@@ -34,5 +43,9 @@
   }
   .MuiExpansionPanelSummary-content {
     margin: 0 !important;
+  }
+  .MuiTypography-body1{
+    font-size: .6rem !important; 
+    font-weight: bold !important;
   }
 }

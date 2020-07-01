@@ -1,20 +1,24 @@
 import React from 'react'
-import { ListItem, ListItemAvatar, Avatar, Grid, ListItemText, makeStyles, Theme, createStyles, Hidden } from '@material-ui/core';
+import { ListItem, ListItemAvatar, Avatar, Grid, ListItemText, makeStyles, createStyles, Hidden } from '@material-ui/core';
 
-const useStyles = makeStyles((theme: Theme) =>
+const flightIcon = require('../asset/icons/filght.png');
+const returnFlightIcon = require('../asset/icons/return_flight.png');
+
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             width: '100%',
             display: 'flex',
             justifyContent: "space-around"
         }
-
     }),
 );
 
 export default function FlightFilterCard(props: any) {
     const classes = useStyles();
-
+    if (props.originCity === '' || props.destinationCity === '') {
+        return <div>Invalid Search Prameter</div>
+    }
     return <div className={classes.root}>
         {createListElement(props)}
         {props.isReturn ? createListElement(props, true) : null}
@@ -22,14 +26,14 @@ export default function FlightFilterCard(props: any) {
 }
 
 function createListElement(props: any, isReturn?: boolean) {
-    let imageSrc = "https://static.thenounproject.com/png/59878-200.png";
+    let imageSrc = flightIcon;
     let origin = props.originCity;
     let destination = props.destinationCity;
     let totalFlights = props.allFlights.length + props.multipleRoute.length;
     let departureDate = props.departureDate;
 
     if (isReturn) {
-        imageSrc = "https://icons.iconarchive.com/icons/icons8/android/512/Transport-Airplane-Landing-icon.png";
+        imageSrc = returnFlightIcon;
         origin = props.destinationCity;
         destination = props.originCity;
         totalFlights = props.returnFlights.length + props.returnMultipleRoute.length;
