@@ -158,7 +158,7 @@ class Main extends React.Component<Props, State> {
     createPassengerDropdown(seats: number) {
         let options = [];
         for (let i = 1; i <= seats; i++) {
-            options.push(<MenuItem value={i}>{i}</MenuItem>)
+            options.push(<MenuItem key={i} value={i}>{i}</MenuItem>)
         }
         return options
     }

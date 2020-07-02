@@ -11,7 +11,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Button, Grid, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Link, Hidden } from '@material-ui/core';
+import { Button, Grid, Accordion, Link, Hidden, AccordionSummary , AccordionDetails } from '@material-ui/core';
 import FlightCard from './FlightCard';
 import LayoverTime from './LayoverTime';
 import { calculateTotalDurationForMultipleFlight, convertTohhFormat } from '../service/Utility';
@@ -59,8 +59,8 @@ export default function MultipleFlightCard(props: any) {
     };
 
     return (
-        <ExpansionPanel className={classes.expantionRoot} expanded={expanded === props.flight1.flightNo + props.flight2.flightNo} onChange={handleChange(props.flight1.flightNo + props.flight2.flightNo)}>
-            <ExpansionPanelSummary className={classes.expantionContent} >
+        <Accordion className={classes.expantionRoot} expanded={expanded === props.flight1.flightNo + props.flight2.flightNo} onChange={handleChange(props.flight1.flightNo + props.flight2.flightNo)}>
+            <AccordionSummary className={classes.expantionContent} >
                 <List className={classes.root}>
                     <ListItem key={props.flightNo} className={classes.listItem}>
                         <Hidden xsDown>
@@ -105,13 +105,13 @@ export default function MultipleFlightCard(props: any) {
                         </ListItemSecondaryAction>
                     </ListItem>
                 </List >
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails style={{ display: 'block' }}>
+            </AccordionSummary>
+            <AccordionDetails style={{ display: 'block' }}>
                 <FlightCard multiple {...props.flight1} />
                 <LayoverTime {...props} />
                 <FlightCard multiple {...props.flight2} />
-            </ExpansionPanelDetails>
-        </ExpansionPanel>
+            </AccordionDetails>
+        </Accordion>
 
     );
 }

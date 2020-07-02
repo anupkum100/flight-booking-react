@@ -75,7 +75,7 @@ export default function FlightCard(props: any) {
                         </Grid>
                     </Hidden>
                     {props.multiple ? null :
-                        <Grid item xs={2} md={1} lg={2}>
+                        <Grid item xs={2} md={2} lg={3}>
                             <ListItemText classes={{ primary: classes.price }} primary={"₹" + props.price * props.selectedSeats}></ListItemText>
                         </Grid>
                     }
