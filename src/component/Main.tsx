@@ -52,6 +52,7 @@ interface State {
 
 class Main extends React.Component<Props, State> {
 
+    // global variable maintained to store the all flight data
     allFlights = [];
 
     constructor(props: Props) {
@@ -75,6 +76,7 @@ class Main extends React.Component<Props, State> {
     }
 
     componentDidMount() {
+        // Make the API call to get the list of all flights
         getAllFlights().then(res => res.json()).then(
             (result) => {
                 this.allFlights = result;
@@ -85,6 +87,7 @@ class Main extends React.Component<Props, State> {
         )
     }
 
+    // this will return the list of FlightCard components
     createFlightCard = (isReturn?: boolean) => {
         let flightArrayList = this.state.allFlights;
         if (isReturn) {
@@ -95,6 +98,7 @@ class Main extends React.Component<Props, State> {
         })
     }
 
+    // this will return the list of MultipleFlightCard components
     createMultipleFlightCard = (isReturn?: boolean) => {
         let multipleFlightArrayList = this.state.multipleRoute;
         if (isReturn) {
@@ -107,8 +111,9 @@ class Main extends React.Component<Props, State> {
         })
     }
 
+    // On click of submit, this function will filter the list of flights according to the criteria 
     filterFlights = () => {
-        // NO Stop flights for one way
+        // One way flights
         let filteredResult: any = getNoStopsFlights(this.allFlights, this.state.originCity, this.state.destinationCity, this.state.departureDate, this.state.priceFilter);
         let multipleRouteData: any = getMultipleStopsFlights(this.allFlights, this.state.originCity, this.state.destinationCity, this.state.departureDate, this.state.priceFilter);
 
@@ -119,7 +124,7 @@ class Main extends React.Component<Props, State> {
             showReturnFlight: false
         })
 
-        // 2 Stop flights
+        // Return Flights
         if (this.state.isReturn) {
             let filteredResult_Return: any = getNoStopsFlights(this.allFlights, this.state.destinationCity, this.state.originCity, this.state.returnDate, this.state.priceFilter);
             let multipleRouteData_Return: any = getMultipleStopsFlights(this.allFlights, this.state.destinationCity, this.state.originCity, this.state.returnDate, this.state.priceFilter);
@@ -132,6 +137,7 @@ class Main extends React.Component<Props, State> {
         }
     }
 
+    // This function will return the filter card to be shown at the top of the flight list
     createFilterCard = () => {
         return <div className="text-left">
             <Link onClick={this.resetFilter}>
@@ -141,10 +147,20 @@ class Main extends React.Component<Props, State> {
         </div>
     }
 
+    // This function returns a basic validation message 
     showErrorMessage() {
         if (this.state.originCity !== '' && this.state.originCity === this.state.destinationCity)
             return <Alert severity="error">Origin and Destination can not be same</Alert>
         return null
+    }
+
+    // This function returns a options for passenger list
+    createPassengerDropdown(seats: number) {
+        let options = [];
+        for (let i = 1; i <= seats; i++) {
+            options.push(<MenuItem value={i}>{i}</MenuItem>)
+        }
+        return options
     }
 
     render() {
@@ -197,7 +213,6 @@ class Main extends React.Component<Props, State> {
                             disableClearable
                             id="originCity"
                             options={getCities(this.allFlights)}
-                            // searchText={this.state.originCity}
                             getOptionLabel={(option: any) => option}
                             size="small"
                             onChange={this.onTagsChange}
@@ -208,7 +223,6 @@ class Main extends React.Component<Props, State> {
                         <Autocomplete
                             id="destinationCity"
                             options={getCities(this.allFlights)}
-                            // value={this.state.destinationCity}
                             getOptionLabel={(option: any) => option}
                             size="small"
                             onChange={this.onTagsChange}
@@ -255,11 +269,7 @@ class Main extends React.Component<Props, State> {
                                 className={classes.selectEmpty}
                                 variant="outlined"
                             >
-                                <MenuItem value={1}>1</MenuItem>
-                                <MenuItem value={2}>2</MenuItem>
-                                <MenuItem value={3}>3</MenuItem>
-                                <MenuItem value={4}>4</MenuItem>
-                                <MenuItem value={5}>5</MenuItem>
+                                {this.createPassengerDropdown(5)}
                             </Select>
                         </FormControl>
 

@@ -1,3 +1,9 @@
+/*!
+ * This component returns the passenger icon which can be viewd in the filter component
+ * Max 2 icons will be visible anything more than 2 will have + icon
+ */
+
+
 import React from 'react';
 import { Avatar } from "@material-ui/core";
 const passengerIcon = require('../asset/icons/passenger.png') 
