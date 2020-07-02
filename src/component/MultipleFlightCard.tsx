@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -14,11 +14,11 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button, Grid, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Link, Hidden } from '@material-ui/core';
 import FlightCard from './FlightCard';
 import LayoverTime from './LayoverTime';
-import { calculateTotalDurationForMultipleFlight } from '../service/Utility';
+import { calculateTotalDurationForMultipleFlight, convertTohhFormat } from '../service/Utility';
 
 const multipleFlightIcon = require('../asset/icons/connecting.png');
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         expantionRoot: {
             width: '99%',
@@ -63,7 +63,7 @@ export default function MultipleFlightCard(props: any) {
             <ExpansionPanelSummary className={classes.expantionContent} >
                 <List className={classes.root}>
                     <ListItem key={props.flightNo} className={classes.listItem}>
-                        <Hidden smDown>
+                        <Hidden xsDown>
                             <ListItemAvatar>
                                 <Avatar
                                     alt={`Avatar n°${props.flightNo + 1}`}
@@ -80,11 +80,11 @@ export default function MultipleFlightCard(props: any) {
                             </Grid>
                             <Hidden smDown>
                                 <Grid item xs={4} md={2}>
-                                    <ListItemText primary={props.flight1.departureTime} />
+                                    <ListItemText primary={convertTohhFormat(props.flight1.departureTime)} />
                                     <ListItemText secondary={props.flight1.origin.split(' ')[0]} />
                                 </Grid>
                                 <Grid item xs={4} md={2}>
-                                    <ListItemText primary={props.flight2.arrivalTime} />
+                                    <ListItemText primary={convertTohhFormat(props.flight2.arrivalTime)} />
                                     <ListItemText secondary={props.flight2.destination.split(' ')[0]} />
                                 </Grid>
 
@@ -94,7 +94,7 @@ export default function MultipleFlightCard(props: any) {
                                 </Grid>
                             </Hidden>
                             <Grid item xs={6} md={2}>
-                                <ListItemText classes={{ primary: classes.price }} primary={(props.flight1.price + props.flight2.price) * props.selectedSeats} />
+                                <ListItemText classes={{ primary: classes.price }} primary={"₹" + (props.flight1.price + props.flight2.price) * props.selectedSeats} />
                             </Grid>
                         </Grid>
 

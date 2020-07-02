@@ -42,11 +42,11 @@ export function getCities(allFlights: Array<Flight>) {
 
 // This function returns the laypver time between flight1 and flight 2
 export function calculateLayoverTime(props: any) {
-    let arrivingTime = convertTimeToMinute(props.flight1.arrivalTime) 
+    let arrivingTime = convertTimeToMinute(props.flight1.arrivalTime)
     let departureTime = convertTimeToMinute(props.flight2.departureTime)
 
     let difference = departureTime - arrivingTime;
-    
+
     return (Math.floor(difference / 60) + 'h ' + difference % 60 + 'm')
 }
 
@@ -71,5 +71,10 @@ export function convertTimeToMinute(time: any) {
 export function changeDateFormat(date: string) {
     let changedDate = new Date(date).toDateString().split(' ');
     return (changedDate[0] + ', ' + changedDate[2] + ' ' + changedDate[1])
+}
+
+// add 0 if hour is less than 10
+export function convertTohhFormat(time: string) {
+    return (parseInt(time.split(':')[0]) < 10 ? ('0' + time) : time)
 }
 

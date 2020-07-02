@@ -119,6 +119,7 @@ class Main extends React.Component<Props, State> {
             showReturnFlight: false
         })
 
+        // 2 Stop flights
         if (this.state.isReturn) {
             let filteredResult_Return: any = getNoStopsFlights(this.allFlights, this.state.destinationCity, this.state.originCity, this.state.returnDate, this.state.priceFilter);
             let multipleRouteData_Return: any = getMultipleStopsFlights(this.allFlights, this.state.destinationCity, this.state.originCity, this.state.returnDate, this.state.priceFilter);
@@ -168,7 +169,7 @@ class Main extends React.Component<Props, State> {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" noWrap>
-                            Flight Search
+                            Flight Search App
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -196,12 +197,12 @@ class Main extends React.Component<Props, State> {
                             disableClearable
                             id="originCity"
                             options={getCities(this.allFlights)}
-                            // value={this.state.originCity}
+                            // searchText={this.state.originCity}
                             getOptionLabel={(option: any) => option}
                             size="small"
                             onChange={this.onTagsChange}
                             className={classes.autocomplete}
-                            renderInput={(params) => <TextField {...params} label="Origin City" variant="outlined" name="originCity" value={this.state.originCity} onChange={this.handleChange} />}
+                            renderInput={(params) => <TextField {...params} label="Enter Origin City" variant="outlined" name="originCity" value={this.state.originCity} onChange={this.handleChange} />}
                         />
 
                         <Autocomplete
@@ -211,7 +212,7 @@ class Main extends React.Component<Props, State> {
                             getOptionLabel={(option: any) => option}
                             size="small"
                             onChange={this.onTagsChange}
-                            renderInput={(params) => <TextField {...params} label="Destination City" variant="outlined" name="destinationCity" value={this.state.destinationCity} onChange={this.handleChange} />}
+                            renderInput={(params) => <TextField {...params} label="Enter Destination City" variant="outlined" name="destinationCity" value={this.state.destinationCity} onChange={this.handleChange} />}
                         />
 
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -246,7 +247,7 @@ class Main extends React.Component<Props, State> {
                         </MuiPickersUtilsProvider>
 
                         <FormControl margin="dense" fullWidth required className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-required-label">Select Seats</InputLabel>
+                            <InputLabel id="demo-simple-select-required-label">Select Passengers</InputLabel>
                             <Select
                                 name="selectedSeats"
                                 value={this.state.selectedSeats}
@@ -257,6 +258,8 @@ class Main extends React.Component<Props, State> {
                                 <MenuItem value={1}>1</MenuItem>
                                 <MenuItem value={2}>2</MenuItem>
                                 <MenuItem value={3}>3</MenuItem>
+                                <MenuItem value={4}>4</MenuItem>
+                                <MenuItem value={5}>5</MenuItem>
                             </Select>
                         </FormControl>
 
@@ -274,7 +277,7 @@ class Main extends React.Component<Props, State> {
                         <FormControl margin="dense" fullWidth required className={classes.formControlSlider}>
                             <Slider
                                 max={10000}
-                                min={1000}
+                                min={0}
                                 value={this.state.priceFilter}
                                 onChange={this.handlePriceFilterChange}
                                 aria-labelledby="range-slider"
@@ -304,8 +307,8 @@ class Main extends React.Component<Props, State> {
                         </Grid>
 
                         {this.state.showReturnFlight && this.state.isSearchFilterOn ? <Grid item xs={6}>
-                            {this.createFlightCard(this.state.isReturn)}
-                            {this.createMultipleFlightCard(this.state.isReturn)}
+                            {this.createFlightCard(this.state.showReturnFlight)}
+                            {this.createMultipleFlightCard(this.state.showReturnFlight)}
                         </Grid> : null}
                     </Grid>
                 </main>
@@ -355,7 +358,6 @@ class Main extends React.Component<Props, State> {
     handleTabChange = () => {
         this.setState({
             isReturn: !this.state.isReturn,
-            showReturnFlight: this.state.isReturn ? true : false
         })
     }
 
@@ -364,8 +366,8 @@ class Main extends React.Component<Props, State> {
         this.setState({
             originCity: '',
             destinationCity: '',
-            departureDate: new Date(),
-            returnDate: new Date(),
+            departureDate: new Date('2020/11/01'),
+            returnDate: new Date('2020/11/02'),
             selectedSeats: 1,
             allFlights: this.allFlights,
             multipleRoute: [],

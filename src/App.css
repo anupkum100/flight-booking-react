@@ -9,6 +9,10 @@
   text-align: left;
 }
 
+.break-word{
+  white-space: break-spaces;
+}
+
 .MuiTypography-colorTextSecondary,
 .MuiTypography-colorPrimary,
 .MuiSlider-valueLabel,
@@ -31,7 +35,7 @@
   padding-right: 0 !important;
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 730px) {
   .MuiListItemSecondaryAction-root {
     position: relative !important;
     bottom: 0;
@@ -56,4 +60,19 @@
     font-size: 0.6rem !important;
     font-weight: bold !important;
   }
+}
+
+.passengers {
+  display: flex;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.passengers .MuiAvatar-root.MuiAvatar-square {
+  width: 15px;
+  height: 15px;
+  opacity: 0.6;
+  margin-right: 5px;
 }

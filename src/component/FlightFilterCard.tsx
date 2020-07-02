@@ -7,6 +7,7 @@
 import React from 'react'
 import { ListItem, ListItemAvatar, Avatar, Grid, ListItemText, makeStyles, createStyles, Hidden } from '@material-ui/core';
 import { changeDateFormat } from '../service/Utility';
+import Passengers from './Passengers';
 
 const flightIcon = require('../asset/icons/filght.png');
 const returnFlightIcon = require('../asset/icons/return_flight.png');
@@ -24,7 +25,7 @@ const useStyles = makeStyles(() =>
 export default function FlightFilterCard(props: any) {
     const classes = useStyles();
     if (props.originCity === '' || props.destinationCity === '') {
-        return <div>Invalid Search Prameter</div>
+        return <div>Invalid Search Parameter</div>
     }
     return <div className={classes.root}>
         {createListElement(props)}
@@ -59,8 +60,11 @@ function createListElement(props: any, isReturn?: boolean) {
         <Grid container spacing={3}>
             <Grid item xs={12}>
                 <ListItemText primary={`${origin} to ${destination}`} />
-                <ListItemText secondary={`${totalFlights} Results found  ${changeDateFormat(departureDate)}`} />
+                <ListItemText className="break-word" secondary={`${totalFlights} Results found ${' '} ${changeDateFormat(departureDate)}`} />
             </Grid>
+            <div className="passengers">
+                <Passengers totalSeats={props.selectedSeats} />
+            </div>
 
         </Grid>
     </ListItem>

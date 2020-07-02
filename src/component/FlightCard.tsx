@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -14,11 +14,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Button, Grid, Hidden } from '@material-ui/core';
-import { calculateTimeDifference } from '../service/Utility';
+import { calculateTimeDifference, convertTohhFormat } from '../service/Utility';
 
 const flightIcon = require('../asset/icons/filght.png');
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             width: '99%'
@@ -53,30 +53,30 @@ export default function FlightCard(props: any) {
                 </Hidden>
 
                 <Grid container>
-                    <Hidden xsDown>
+                    <Hidden smDown>
                         <Grid item xs={4} md={2}>
                             <ListItemText primary={props.name} />
                             <ListItemText secondary={props.flightNo} />
                         </Grid>
                     </Hidden>
                     <Grid item xs={props.multiple ? 6 : 4} md={2}>
-                        <ListItemText primary={props.departureTime} />
+                        <ListItemText primary={convertTohhFormat(props.departureTime)} />
                         <ListItemText secondary={props.origin.split(' ')[0]} />
                     </Grid>
 
                     <Grid item xs={props.multiple ? 6 : 4} md={2}>
-                        <ListItemText primary={props.arrivalTime} />
+                        <ListItemText primary={convertTohhFormat(props.arrivalTime)} />
                         <ListItemText secondary={props.destination.split(' ')[0]} />
                     </Grid>
-                    <Hidden xsDown>
+                    <Hidden smDown>
                         <Grid item xs={4} md={2}>
                             <ListItemText primary={calculateTimeDifference(props)} />
                             <ListItemText secondary={'Non Stop'} />
                         </Grid>
                     </Hidden>
                     {props.multiple ? null :
-                        <Grid item xs={4} md={2}>
-                            <ListItemText classes={{ primary: classes.price }} primary={props.price * props.selectedSeats}><span className={classes.price}>&#8377;</span></ListItemText>
+                        <Grid item xs={2} md={1} lg={2}>
+                            <ListItemText classes={{ primary: classes.price }} primary={"₹" + props.price * props.selectedSeats}></ListItemText>
                         </Grid>
                     }
 

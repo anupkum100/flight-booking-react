@@ -1,4 +1,4 @@
-import { calculateTimeDifference, calculateTotalDurationForMultipleFlight, checkIfDifferenceInTimeGreateThan30Mins, getCities, calculateTime, convertTimeToMinute, calculateLayoverTime, changeDateFormat } from './Utility';
+import { calculateTimeDifference, calculateTotalDurationForMultipleFlight, checkIfDifferenceInTimeGreateThan30Mins, getCities, calculateTime, convertTimeToMinute, calculateLayoverTime, changeDateFormat, convertTohhFormat } from './Utility';
 
 test('calculateTimeDifference should be truthy', () => {
     expect(calculateTimeDifference).not.toBe(undefined);
@@ -173,6 +173,15 @@ test('changeDateFormat should be truthy', () => {
 test('changeDateFormat should convert 11/01/2020 to Sun, 01 Nov', () => {
     expect(changeDateFormat('11/01/2020')).toEqual('Sun, 01 Nov');
 });
+
+test('convertTohhFormat should be truthy', () => {
+    expect(convertTohhFormat).not.toBe(undefined);
+});
+
+test('convertTohhFormat should convert 5:00 to 05:00', () => {
+    expect(convertTohhFormat('5:00')).toEqual('05:00');
+});
+
 
 
 
